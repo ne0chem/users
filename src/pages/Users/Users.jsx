@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import styles from "./Users.css";
-import Header from "../../components/Header/Header";
-import Modal from "../../components/Modal/Modal";
-import User from "../../components/User/User";
-import axios from "axios";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState, useEffect } from 'react';
+import styles from './Users.css';
+import Header from '../../components/Header/Header';
+import Modal from '../../components/Modal/Modal';
+import User from '../../components/User/User';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { HEADERS } from './consts';
 
 export default function Users() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,10 +14,10 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/users");
+      const response = await axios.get('http://localhost:5000/users');
       setUsers(response.data);
     } catch (err) {
-      console.error("Ошибка при загрузке пользователей:", err);
+      console.error('Ошибка при загрузке пользователей:', err);
     }
   };
 
@@ -27,22 +28,43 @@ export default function Users() {
   const handleDeleteUser = async (userId) => {
     try {
       await axios.delete(`http://localhost:5000/users/${userId}`);
-      alert("Пользователь удален");
+      alert('Пользователь удален');
       fetchUsers();
     } catch (error) {
-      toast.error("Ошибка при удалении пользователя");
+      toast.error('Ошибка при удалении пользователя');
       console.error(error);
     }
   };
 
   const openModal = () => {
     setIsModalOpen(true);
-    console.log("open");
+    console.log('open');
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const onCreatUser = async (formValues) => {
+    const response = await axios.post('http://localhost:5000/users', formValues);
+    fetchUsers();
+  };
+  const [serchText, setSerchText] = useState('');
+  const handleSearch = (e) => {
+    setSerchText(e.target.value);
+  };
+
+  const filteredUsers = users.filter((user) => {
+    const keys = Object.keys(user);
+    console.log(keys);
+    let isMatch = false;
+    keys.forEach((key) => {
+      if (user[key].includes(serchText)) {
+        isMatch = true;
+      }
+    });
+    return isMatch;
+  });
+  const sortedUsers = filteredUsers.sort((a, b) => {});
 
   return (
     <div>
@@ -55,7 +77,7 @@ export default function Users() {
             <button onClick={openModal} className="button">
               Add User
             </button>
-            {isModalOpen && <Modal onClose={closeModal} />}
+            {isModalOpen && <Modal onCreatUser={onCreatUser} onClose={closeModal} />}
             <img className="button__img" src="./plus.svg" alt="+" />
           </div>
         </div>
@@ -74,13 +96,7 @@ export default function Users() {
           <div className="users__top">
             <div className="users__input">
               <img src="./search.svg" alt="" className="input__img" />
-              <input
-                className="input"
-                type="text"
-                name=""
-                id=""
-                placeholder="Searh Users"
-              />
+              <input onChange={handleSearch} className="input" type="text" name="" id="" placeholder="Searh Users" />
             </div>
             <div className="users__left">
               <img src="./filter.svg" alt="" className="users__left__img" />
@@ -91,32 +107,22 @@ export default function Users() {
             <div className="table">
               <div className="table__info">
                 <div className="table__header">
-                  <div className="header__name">
-                    <div className="table__checkbox"></div>
-                    <p className="name">Name</p>
-                    <img src="./chevron1.svg" alt="" className="table__img" />
-                  </div>
-                  <div className="header__name">
-                    <p className="name">Email</p>
-                    <img src="./chevron1.svg" alt="" className="table__img" />
-                  </div>
-                  <div className="header__name">
-                    <p className="name">Role</p>
-                    <img src="./chevron1.svg" alt="" className="table__img" />
-                  </div>
-                  <div className="header__name">
-                    <p className="name">Created on</p>
-                    <img src="./chevron1.svg" alt="" className="table__img" />
-                  </div>
-                  <div className="header__name">
-                    <p className="name">Status</p>
-                    <img src="./chevron1.svg" alt="" className="table__img" />
-                  </div>
+                  {HEADERS.map((header) => {
+                    return (
+                      <div className="header__name">
+                        <div className="table__checkbox"></div>
+                        <p onClick={sortedUsers} className="name">
+                          {header}
+                        </p>
+                        <img src="./chevron1.svg" alt="" className="table__img" />
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div>
-                  {users.length > 0 ? (
-                    users.map((user) => (
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
                       <User
                         key={user.id}
                         id={user.id}
