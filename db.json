@@ -4,7 +4,7 @@
       "id": "480b",
       "status": "dddd",
       "created": "2025-09-12T21:00:00.000Z",
-      "role": "ввв",
+      "role": "client",
       "email": "brenkoangelina@gmail.com",
       "name": "jjjj"
     },
@@ -12,7 +12,7 @@
       "id": "526f",
       "status": "qq",
       "created": "2025-08-31T21:00:00.000Z",
-      "role": "qq",
+      "role": "admin",
       "email": "qqq@mail.ru",
       "name": "qq"
     },
@@ -20,7 +20,7 @@
       "id": "ba33",
       "status": "ввв",
       "created": "2025-09-04T21:00:00.000Z",
-      "role": "ddd",
+      "role": "admin",
       "email": "brenkoangelina@gmail.com",
       "name": "ddd"
     }
